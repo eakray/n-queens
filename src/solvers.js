@@ -158,26 +158,26 @@ window.findNQueensSolution = function(n) {
   }
   var getSolutions = function(board, row) {
     if (!found) {
-    for (var x = 0; x < n; x++) {
-      if (!found) {
-        board.togglePiece(x, row);
-      }
-      // end of board
-      if (row === n-1) {
-        if (!(board.hasAnyQueensConflicts())) {
-          found = true;
-          // solutions.push(board.rows().slice());
-          solution = board.rows().slice();
+      for (var x = 0; x < n; x++) {
+        if (!found) {
+          board.togglePiece(x, row);
         }
-      } else {
-        if (!(board.hasAnyQueensConflicts())) {
-          getSolutions(board, row+1);
+        // end of board
+        if (row === n-1) {
+          if (!(board.hasAnyQueensConflicts())) {
+            found = true;
+            // solutions.push(board.rows().slice());
+            solution = board.rows().slice();
+          }
+        } else {
+          if (!(board.hasAnyQueensConflicts())) {
+            getSolutions(board, row+1);
+          }
+        }
+        if (!found) {
+          board.togglePiece(x, row);
         }
       }
-      if (!found) {
-        board.togglePiece(x, row);
-      }
-    }
     }
   }
   getSolutions(solutionBoard, 0);
