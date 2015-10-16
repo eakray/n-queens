@@ -15,10 +15,8 @@ describe('solvers', function() {
         expect(solutionBoard.get('n')).to.equal(n);
         expect(numPieces).to.equal(n);
         expect(solutionBoard.hasAnyRooksConflicts()).to.be.equal(false);
-      });
-      
+      });  
     });
-
   });
 
   describe('countNRooksSolutions()', function() {

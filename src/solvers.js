@@ -140,3 +140,54 @@ window.countNQueensSolutions = function(n) {
   return solutionCount;
 };
 
+window.countNQueensSolutionsWithWorkers = function(n) {
+  var firstWorkerStartIndex = 0;
+  var firstWorkerEndIndex;
+  var secondWorkerStartIndex;
+  var secondWorkerEndIndex = n-1;
+  if (n%2 === 1) {
+    // first one gets (n-1)/2
+    firstWorkerEndIndex = (n-1)/2;
+    // second gets (n+1)/2
+    secondWorkerStartIndex = (n+1)/2;
+  } else {
+    // first one gets 0-((n/2)-1)
+    firstWorkerEndIndex = (n/2)-1;
+    // second one gets (n/2)-(length-1)
+    secondWorkerStartIndex = (n/2);
+  }
+  var firstWorkerBoards = [];
+  var secondWorkerBoards = [];
+
+  for ( var i = 0; i <= firstWorkerEndIndex; i++) {
+    var board = new Board({n:n});
+    board.togglePiece(0, i);
+    firstWorkerBoards.push(board.rows());
+  }
+  for ( var i = secondWorkerStartIndex; i <= secondWorkerEndIndex; i++) {
+    var board = new Board({n:n});
+    board.togglePiece(0, i);
+    secondWorkerBoards.push(board.rows());
+  }  
+
+  var firstWorker = new Worker("src/CountQueensWorker.js");
+  var secondWorker = new Worker("src/CountQueensWorker.js");
+
+  window.solutionCount = 0;
+  firstWorker.onmessage = function(e) {
+    console.log('count: ' + e.data);
+    // debugger;
+    window.solutionCount += e.data;
+  }
+  secondWorker.onmessage = function(e) {
+    window.solutionCount += e.data;
+    console.log('count: ' + e.data);
+  }
+  console.log('count: ' + solutionCount);
+
+  firstWorker.postMessage(firstWorkerBoards);
+  secondWorker.postMessage(secondWorkerBoards);
+  // while workers are alive
+  
+  return window.solutionCount;
+}
